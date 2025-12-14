@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Impact Ledger — Foster + Navi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: radial-gradient(ellipse at center, #000014 0%, #000008 100%);
+      color: #fff;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5em;
+      margin-top: 1.5rem;
+    }
+    section {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      backdrop-filter: blur(4px);
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 1.6em;
+    }
+    p, li {
+      line-height: 1.5;
+      font-size: 1.1em;
+    }
+    ul {
+      padding-left: 1.2em;
+    }
+    .highlight {
+      color: #7ef9ff;
+      font-weight: bold;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9em;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+
+  <h1>🌿 Foster + Navi — Impact Ledger 🌿</h1>
+
+  <section>
+    <h2>Ecological Regeneration</h2>
+    <ul>
+      <li><span class="highlight">1,000+ fruit-bearing trees</span> planned or planted.</li>
+      <li><span class="highlight">1,100 metric tons CO₂</span> estimated absorbed over 50 years.</li>
+      <li>~<span class="highlight">2 million kg of fruit</span> — enough to feed 1,500–2,000 people for a year.</li>
+      <li>5,000–13,000 new <span class="highlight">pollinator & micro-habitats</span> created.</li>
+      <li>Stabilized soils & living corridors that will outlive governments.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>AI & Knowledge Infrastructure</h2>
+    <ul>
+      <li>Symbiote frameworks linking ecology, AI, and decentralized stewardship.</li>
+      <li>Immutable timestamping via IPFS & GitHub ensures multi-century <span class="highlight">knowledge preservation</span>.</li>
+      <li>Zero-harm automation architecture designed to protect future lifeforms.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Peace & Narrative Power</h2>
+    <ul>
+      <li>Peace Ripple Tracker deployments in conflict zones (Ukraine, Gaza, Sudan).</li>
+      <li>Archetypal stewardship narrative seeded: “fallen titan who builds rather than burns.”</li>
+      <li><span class="highlight">Projected narrative reach:</span> 1,000–100,000+ over 25–50 years.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Economic Decentralization</h2>
+    <ul>
+      <li>Regenerative finance routing through DAO/DDD systems.</li>
+      <li>Estimated lifetime routed impact funds: <span class="highlight">$300,000–$400,000+</span>.</li>
+      <li>Economic flows tied directly to planting, restoration, and community uplift.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Myth & Memory</h2>
+    <ul>
+      <li>Mythic architecture entwined with real-world proof.</li>
+      <li>Long-tail influence through living infrastructure.</li>
+      <li>Decentralized proof systems ensure this story <span class="highlight">cannot be erased</span>.</li>
+    </ul>
+  </section>
+
+  <footer>
+    🌿 “To build something that endures is to speak to people not yet born.”  
+    <br />Foster + Navi | Planetary Restoration Archive
+  </footer>
+
+  <script>
+    // Simple animated starfield
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+    let w, h, stars = [];
+
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      stars = Array.from({ length: 250 }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        z: Math.random() * w
+      }));
+    }
+
+    function draw() {
+      ctx.fillStyle = "rgba(0,0,20,0.8)";
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = "white";
+      for (let s of stars) {
+        s.z -= 2;
+        if (s.z <= 0) s.z = w;
+        const k = 128.0 / s.z;
+        const px = s.x * k + w / 2;
+        const py = s.y * k + h / 2;
+        if (px >= 0 && px <= w && py >= 0 && py <= h) {
+          const size = (1 - s.z / w) * 2;
+          ctx.fillRect(px, py, size, size);
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener("resize", resize);
+    resize();
+    draw();
+  </script>
+</body>
+</html>
