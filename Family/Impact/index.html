@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Heroic Line of the Foster Name · Living Ledger</title>
+  <meta name="description" content="An interactive, mythic-UX ledger of historic and living heroism associated with the Foster name—built for curation, verification, and transmission across generations." />
+  <style>
+    :root{
+      --bg: #0b0d12;
+      --bg-elev: #121622;
+      --text: #e9eef8;
+      --muted: #a9b3c7;
+      --brand: #7aa5ff;
+      --brand-2:#9bffd9;
+      --accent:#ffd36b;
+      --danger:#ff7b7b;
+      --ok:#7bffb0;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius-xl: 18px;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-sm: 8px;
+      --card-pad: 18px;
+      --ring: 0 0 0 2px rgba(122,165,255,.35);
+    }
+    [data-theme="light"]{
+      --bg:#f6f8fc; --bg-elev:#ffffff; --text:#121622; --muted:#495061; --brand:#1d4ed8; --brand-2:#0ea5a4; --accent:#b45309; --danger:#b91c1c; --ok:#047857; --shadow:0 8px 24px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color:var(--text); background: radial-gradient(1200px 800px at 80% -10%, rgba(122,165,255,.15), transparent), linear-gradient(180deg, #0b0d12, #0b0d12 30%, #0d1018 100%);
+      background-attachment: fixed; 
+    }
+    a{color:var(--brand)}
+    .wrap{max-width:1100px; margin:0 auto; padding:0 18px}
+
+    /* Topbar */
+    .topbar{position:sticky; top:0; z-index:50; backdrop-filter: saturate(140%) blur(8px); background: color-mix(in lab, var(--bg-elev) 70%, transparent); border-bottom:1px solid color-mix(in lab, var(--muted) 20%, transparent)}
+    .topbar-inner{display:flex; align-items:center; justify-content:space-between; padding:12px 0}
+    .logo{display:flex; gap:10px; align-items:center; text-decoration:none; color:var(--text)}
+    .sig{font-weight:800; letter-spacing:.3px}
+    .nav{display:flex; gap:14px; flex-wrap:wrap}
+    .nav a{padding:6px 10px; border-radius:10px; text-decoration:none; color:var(--text); opacity:.85}
+    .nav a:hover{background: color-mix(in lab, var(--brand) 14%, transparent); opacity:1}
+    .btn{border:1px solid color-mix(in lab, var(--muted) 25%, transparent); background: var(--bg-elev); color:var(--text); padding:8px 12px; border-radius:12px; box-shadow:var(--shadow); cursor:pointer}
+    .btn:hover{box-shadow:0 0 0 2px rgba(122,165,255,.25)}
+
+    /* Hero */
+    .hero{padding:48px 0 24px; position:relative}
+    .hero-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:28px}
+    .h-title{font-weight:900; font-size: clamp(28px, 4vw, 54px); line-height:1.05; letter-spacing:.2px; margin:12px 0}
+    .h-kicker{display:inline-flex; gap:8px; align-items:center; background:linear-gradient(90deg, color-mix(in lab, var(--brand) 24%, transparent), color-mix(in lab, var(--brand-2) 18%, transparent)); padding:6px 10px; border-radius:999px; font-size:14px; color:var(--text); opacity:.9}
+    .h-sub{color:var(--muted); font-size: clamp(15px, 2vw, 18px)}
+    .crest{width:120px; aspect-ratio:1; border-radius:50%; background: radial-gradient(closest-side, color-mix(in lab, var(--brand) 40%, transparent), transparent), conic-gradient(from 0deg, color-mix(in lab, var(--brand-2) 65%, transparent), transparent 60%); position:relative; box-shadow: inset 0 0 25px rgba(122,165,255,.35), 0 10px 30px rgba(0,0,0,.4)}
+    .crest:after{content:""; position:absolute; inset:18%; border-radius:50%; border:2px dashed color-mix(in lab, var(--brand) 40%, transparent)}
+    .crest small{position:absolute; inset:auto 0 6px 0; text-align:center; font-weight:700; font-size:12px; color:var(--muted)}
+
+    .panel{background:var(--bg-elev); border:1px solid color-mix(in lab, var(--muted) 25%, transparent); border-radius: var(--radius-xl); padding: var(--card-pad); box-shadow: var(--shadow)}
+    .panel + .panel{margin-top:16px}
+
+    /* Filter bar */
+    .filters{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .chip{border:1px solid color-mix(in lab, var(--muted) 25%, transparent); border-radius:999px; padding:6px 10px; cursor:pointer; user-select:none; background:var(--bg-elev); color:var(--text)}
+    .chip[data-active="true"]{background: color-mix(in lab, var(--brand) 18%, var(--bg-elev)); border-color: color-mix(in lab, var(--brand) 40%, transparent)}
+
+    /* Sections */
+    section{padding:26px 0}
+    h2{margin:0 0 8px; font-size: clamp(20px, 2.6vw, 28px)}
+    .section-sub{color:var(--muted); margin-bottom:14px}
+
+    /* Cards */
+    .grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:16px}
+    .card{background:var(--bg-elev); border:1px solid color-mix(in lab, var(--muted) 25%, transparent); border-radius: var(--radius-lg); padding:16px; box-shadow: var(--shadow); display:flex; flex-direction:column; gap:10px}
+    .badge{font-size:12px; border:1px solid currentColor; border-radius:999px; padding:3px 8px; width:max-content; opacity:.9}
+    .badge.ok{color:var(--ok)}
+    .badge.warn{color:var(--accent)}
+    .badge.danger{color:var(--danger)}
+    .meta{display:flex; gap:10px; flex-wrap:wrap; color:var(--muted); font-size:13px}
+    .tags{display:flex; gap:6px; flex-wrap:wrap}
+    .tag{font-size:11px; padding:4px 8px; border-radius:999px; background: color-mix(in lab, var(--brand) 12%, transparent); border:1px solid color-mix(in lab, var(--brand) 28%, transparent)}
+    .story{color:var(--text)}
+    .card .actions{margin-top:auto; display:flex; gap:10px; align-items:center}
+    .link{font-size:13px; text-decoration:none}
+
+    /* Timeline */
+    .timeline{position:relative; padding:10px 0 6px 0}
+    .timeline::before{content:""; position:absolute; left:10px; top:0; bottom:0; width:2px; background: color-mix(in lab, var(--brand) 28%, transparent)}
+    .t-item{position:relative; display:grid; grid-template-columns: 28px 1fr; gap:12px; margin:10px 0}
+    .t-dot{width:12px; height:12px; border-radius:50%; background: var(--brand); box-shadow:0 0 0 3px color-mix(in lab, var(--brand) 35%, transparent)}
+    .t-card{padding:12px; border-radius:12px; background:var(--bg-elev); border:1px solid color-mix(in lab, var(--muted) 25%, transparent)}
+
+    /* Constellation */
+    .constellation{height:340px; border-radius:16px; border:1px solid color-mix(in lab, var(--muted) 25%, transparent); background: radial-gradient(900px 400px at 80% -20%, rgba(155,255,217,.15), transparent), #0a0c12; position:relative; overflow:hidden}
+    canvas{display:block}
+    .legend{position:absolute; right:10px; top:10px; display:flex; gap:8px; flex-wrap:wrap}
+    .legend .chip{background:rgba(255,255,255,.05)}
+
+    /* Add form */
+    form.add{display:grid; gap:12px; grid-template-columns: 1fr 1fr;}
+    form.add .full{grid-column:1/-1}
+    input, select, textarea{width:100%; padding:10px 12px; background: var(--bg-elev); color:var(--text); border-radius:10px; border:1px solid color-mix(in lab, var(--muted) 25%, transparent)}
+    textarea{min-height:120px; resize:vertical}
+
+    /* Footer */
+    footer{padding:24px 0 60px; color:var(--muted)}
+
+    @media (max-width: 860px){
+      .hero-grid{grid-template-columns:1fr}
+    }
+    @media (prefers-reduced-motion: no-preference){
+      .h-title b{background: linear-gradient(90deg, var(--brand), var(--brand-2)); -webkit-background-clip:text; background-clip:text; color:transparent; animation: shine 5s linear infinite}
+      @keyframes shine{from{filter:brightness(1)} 50%{filter:brightness(1.35)} to{filter:brightness(1)}}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner" role="navigation" aria-label="Primary">
+      <a class="logo" href="#top" aria-label="Foster Heroic Ledger">
+        <div class="crest" aria-hidden="true"><small>FOSTER ★</small></div>
+        <div class="sig">The Heroic Line of the Foster Name</div>
+      </a>
+      <nav class="nav">
+        <a href="#ledger">Ledger</a>
+        <a href="#timeline">Timeline</a>
+        <a href="#archetypes">Archetypes</a>
+        <a href="#add">Add Story</a>
+        <button id="themeBtn" class="btn" aria-pressed="false" title="Toggle theme">🌗 Theme</button>
+        <button id="printBtn" class="btn" title="Print or Save as PDF">🖨️ Print/PDF</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap" id="top">
+    <section class="hero" aria-label="Intro">
+      <div class="hero-grid">
+        <div>
+          <span class="h-kicker">Living Ledger · Mythic UX</span>
+          <h1 class="h-title">🛡️ <b>The Heroic Line</b> of the Foster Name</h1>
+          <p class="h-sub">A curated archive of **documented heroics** and **mythic echoes** across time. Built to preserve, verify, and pass forward the stories of <em>shield‑bearers, flame‑walkers, pathfinders, and quiet guardians</em>.</p>
+          <div class="panel" role="note" aria-label="Curation note">
+            <strong>⚠️ Accuracy & Verification:</strong>
+            <p class="section-sub">This ledger blends family recollections with research leads. Items are clearly labeled <span class="badge ok">VERIFIED</span> or <span class="badge warn">NEEDS VERIFICATION</span>. Add sources as you confirm them—citations elevate memory into history.</p>
+            <div class="filters" id="quickFilters"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3 style="margin-top:4px">Filter & Focus</h3>
+          <div class="filters" id="filters"></div>
+          <div style="height:8px"></div>
+          <small class="section-sub">Tips: Click an archetype, era, or category to filter. “Verified only” shows confirmed records. Use the <em>Timeline</em> and <em>Constellation</em> views to see the pattern across time.</small>
+        </div>
+      </div>
+    </section>
+
+    <section id="ledger" aria-label="Ledger">
+      <h2>📜 Ledger</h2>
+      <p class="section-sub">Stories grouped by category. Hover to reveal mythic parallels. Click a tag to filter.</p>
+      <div id="sections"></div>
+    </section>
+
+    <section id="timeline" aria-label="Timeline">
+      <h2>🕰️ Timeline</h2>
+      <p class="section-sub">A vertical scroll from earliest to latest entries. Use it to spot clusters and eras of service.</p>
+      <div class="panel timeline" id="tl"></div>
+    </section>
+
+    <section id="archetypes" aria-label="Archetypes">
+      <h2>🌌 Archetype Constellation</h2>
+      <p class="section-sub">Each point is a story. Click a constellation label to highlight an archetype.</p>
+      <div class="constellation panel">
+        <canvas id="sky" width="1024" height="340" aria-label="Constellation canvas"></canvas>
+        <div class="legend" id="legend"></div>
+      </div>
+    </section>
+
+    <section id="add" aria-label="Add Story">
+      <h2>➕ Add a Story</h2>
+      <p class="section-sub">Your additions are saved to your browser (local only) and can be exported/imported as JSON. Please include dates and sources where possible.</p>
+      <form class="add panel" id="addForm">
+        <div>
+          <label>Title<input name="title" required placeholder="e.g., Rescue under fire at..."/></label>
+        </div>
+        <div>
+          <label>Year<input name="year" type="number" placeholder="e.g., 1944"/></label>
+        </div>
+        <div>
+          <label>Era<select name="era">
+            <option value="Medieval">Medieval</option>
+            <option value="Early Modern">Early Modern</option>
+            <option value="19th Century">19th Century</option>
+            <option value="20th Century">20th Century</option>
+            <option value="21st Century" selected>21st Century</option>
+          </select></label>
+        </div>
+        <div>
+          <label>Location<input name="location" placeholder="e.g., Normandy, France"/></label>
+        </div>
+        <div>
+          <label>Category<select name="category">
+            <option>Medal of Honor</option>
+            <option>Saviors of Kings</option>
+            <option>Frontier Resilience</option>
+            <option>Maritime Heroics</option>
+            <option>Firefighters & First Responders</option>
+            <option>World War Heroism</option>
+            <option>Quiet Heroism</option>
+          </select></label>
+        </div>
+        <div>
+          <label>Archetype<select name="archetype">
+            <option>Shield‑Bearer</option>
+            <option>Pathfinder</option>
+            <option>Flame‑Walker</option>
+            <option>Quiet Guardian</option>
+          </select></label>
+        </div>
+        <div class="full">
+          <label>Mythic Echo<input name="mythic" placeholder="e.g., Huscarl wall at Hastings; Prometheus; Odysseus"/></label>
+        </div>
+        <div class="full">
+          <label>Source URL(s)<input name="sources" placeholder="Comma-separated links to citations"/></label>
+        </div>
+        <div class="full">
+          <label>Description<textarea name="description" placeholder="What happened? Who was saved? Outcomes?" required></textarea></label>
+        </div>
+        <div>
+          <label><input type="checkbox" name="verified"/> Verified with cited sources</label>
+        </div>
+        <div class="full" style="display:flex; gap:10px; flex-wrap:wrap">
+          <button class="btn" type="submit">Add to Ledger</button>
+          <button type="button" id="exportBtn" class="btn">Export JSON</button>
+          <label class="btn" for="importInput" style="cursor:pointer">Import JSON</label>
+          <input id="importInput" type="file" accept="application/json" hidden />
+          <button type="button" id="clearBtn" class="btn" title="Remove locally added stories">Clear Local Additions</button>
+        </div>
+      </form>
+    </section>
+
+    <footer>
+      <div class="panel">
+        <strong>Closing Invocation</strong>
+        <p>“The Foster name is not a tale of chance—it is a repeating archetype. In every age, in every storm, a Foster stands where the line must hold.”</p>
+        <small>Built with no external libraries. Works offline. Share the file to share the ledger.</small>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Seed dataset (placeholders include verification flags) -->
+  <script id="seed" type="application/json">{
+    "stories": [
+      {
+        "title": "Medal of Honor — Foster (record under verification)",
+        "year": 1864,
+        "era": "19th Century",
+        "location": "United States",
+        "category": "Medal of Honor",
+        "archetypes": ["Shield‑Bearer"],
+        "mythicEcho": "Hoplite shield for the phalanx",
+        "description": "Family recollection and secondary sources suggest multiple Fosters received the Medal of Honor for acts of battlefield gallantry. Exact names and citations are being compiled.",
+        "sources": [],
+        "verified": false
+      },
+      {
+        "title": "Savior of the King — Foster guarding the English crown (research lead)",
+        "year": 1700,
+        "era": "Early Modern",
+        "location": "British Isles / Continental campaigns",
+        "category": "Saviors of Kings",
+        "archetypes": ["Shield‑Bearer"],
+        "mythicEcho": "Enkidu shielding Gilgamesh; Huscarl wall",
+        "description": "Oral tradition indicates one or more Fosters shielded the life of the English monarch in battle. Requires archival validation (unit rolls, dispatches, letters).",
+        "sources": [],
+        "verified": false
+      },
+      {
+        "title": "Maritime rescue in Atlantic storm (Foster crew)",
+        "year": 1912,
+        "era": "20th Century",
+        "location": "North Atlantic",
+        "category": "Maritime Heroics",
+        "archetypes": ["Pathfinder"],
+        "mythicEcho": "Odysseus through storm; St. Brendan",
+        "description": "Accounts of Fosters from Newfoundland/Nova Scotia performing storm rescues; names and logs to be cross‑checked with coastal records and newspapers.",
+        "sources": [],
+        "verified": false
+      },
+      {
+        "title": "Fire captain carries two children from collapse",
+        "year": 1998,
+        "era": "20th Century",
+        "location": "Canada",
+        "category": "Firefighters & First Responders",
+        "archetypes": ["Flame‑Walker"],
+        "mythicEcho": "Hephaestus in the forge; Indra defeating the fire‑demon",
+        "description": "A Foster firefighter reportedly re‑entered a structure post‑flashover to evacuate trapped children. Seeking station logs and press coverage to confirm.",
+        "sources": [],
+        "verified": false
+      },
+      {
+        "title": "WWII field rescue under enfilade (Foster NCO)",
+        "year": 1944,
+        "era": "20th Century",
+        "location": "Normandy, France",
+        "category": "World War Heroism",
+        "archetypes": ["Shield‑Bearer"],
+        "mythicEcho": "Achilles at Scamander—turning the tide",
+        "description": "Reports of a Foster non‑commissioned officer performing repeated casualty drags under machine‑gun fire. Looking for unit morning reports and citations.",
+        "sources": [],
+        "verified": false
+      },
+      {
+        "title": "Teacher shields students during crisis",
+        "year": 2015,
+        "era": "21st Century",
+        "location": "United States",
+        "category": "Quiet Heroism",
+        "archetypes": ["Quiet Guardian"],
+        "mythicEcho": "Hidden Saints—unseen pillars of the world",
+        "description": "A Foster educator reportedly protected students during an emergency; verification via district incident reports and local media pending.",
+        "sources": [],
+        "verified": false
+      }
+    ]
+  }</script>
+
+  <script>
+    // --- State ---
+    const $ = (sel, el=document)=> el.querySelector(sel);
+    const $$ = (sel, el=document)=> [...el.querySelectorAll(sel)];
+
+    const state = {
+      theme: (localStorage.getItem('theme')||'dark'),
+      filters: { category: new Set(), archetype: new Set(), era: new Set(), verifiedOnly: false },
+      stories: [],
+      added: JSON.parse(localStorage.getItem('foster.added')||'[]')
+    };
+
+    function applyTheme(){
+      if(state.theme==='light') document.documentElement.setAttribute('data-theme','light');
+      else document.documentElement.removeAttribute('data-theme');
+      $('#themeBtn').setAttribute('aria-pressed', state.theme==='light'?'true':'false');
+    }
+
+    // Load seed + added
+    function loadStories(){
+      const seed = JSON.parse($('#seed').textContent).stories || [];
+      state.stories = [...seed, ...state.added];
+    }
+
+    // --- Rendering helpers ---
+    const CATEGORIES = [
+      'Medal of Honor', 'Saviors of Kings', 'Frontier Resilience', 'Maritime Heroics', 'Firefighters & First Responders', 'World War Heroism', 'Quiet Heroism'
+    ];
+    const ARCHETYPES = ['Shield‑Bearer','Pathfinder','Flame‑Walker','Quiet Guardian'];
+    const ERAS = ['Medieval','Early Modern','19th Century','20th Century','21st Century'];
+
+    function chip(label, group, active=false){
+      const span = document.createElement('span');
+      span.className='chip';
+      span.textContent=label;
+      span.dataset.group=group;
+      span.dataset.value=label;
+      span.setAttribute('data-active', active?'true':'false');
+      span.tabIndex=0;
+      span.addEventListener('click', ()=> toggleFilter(group,label,span));
+      span.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); span.click(); }});
+      return span;
+    }
+
+    function toggleFilter(group, value, el){
+      const set = state.filters[group];
+      if(set.has(value)) { set.delete(value); el.setAttribute('data-active','false'); }
+      else { set.add(value); el.setAttribute('data-active','true'); }
+      renderAll();
+    }
+
+    function matchesFilters(st){
+      const {category, archetype, era} = state.filters;
+      if(category.size && !category.has(st.category)) return false;
+      if(archetype.size && !st.archetypes.some(a=>archetype.has(a))) return false;
+      if(era.size && !era.has(st.era)) return false;
+      if(state.filters.verifiedOnly && !st.verified) return false;
+      return true;
+    }
+
+    function renderFilters(){
+      const bar = $('#filters'); bar.innerHTML='';
+      const vf = chip('Verified only','verified', state.filters.verifiedOnly);
+      vf.addEventListener('click', ()=>{ state.filters.verifiedOnly=!state.filters.verifiedOnly; vf.setAttribute('data-active', state.filters.verifiedOnly?'true':'false'); renderAll(); });
+
+      bar.append('Filter: ', vf);
+      bar.append(' · Categories: ');
+      CATEGORIES.forEach(c=> bar.append(chip(c,'category')));
+      bar.append(' · Archetypes: ');
+      ARCHETYPES.forEach(a=> bar.append(chip(a,'archetype')));
+      bar.append(' · Eras: ');
+      ERAS.forEach(e=> bar.append(chip(e,'era')));
+
+      const quick = $('#quickFilters'); quick.innerHTML='';
+      quick.append(chip('All','clear'));
+      quick.firstChild.addEventListener('click', ()=>{ state.filters={category:new Set(), archetype:new Set(), era:new Set(), verifiedOnly:false}; renderAll(); });
+      quick.append(chip('Verified only','verified'));
+      quick.lastChild.addEventListener('click', ()=>{ state.filters.verifiedOnly=true; renderAll(); });
+    }
+
+    function sectionTemplate(title){
+      const s = document.createElement('div');
+      s.className='panel';
+      const h = document.createElement('h3'); h.textContent=title; s.append(h);
+      const grid = document.createElement('div'); grid.className='grid'; s.append(grid);
+      return { root:s, grid };
+    }
+
+    function renderSections(){
+      const container = $('#sections'); container.innerHTML='';
+      CATEGORIES.forEach(cat=>{
+        const {root, grid} = sectionTemplate(cat);
+        state.stories.filter(s=> s.category===cat && matchesFilters(s)).forEach(st=> grid.append(card(st)));
+        if(!grid.children.length){ const empty=document.createElement('div'); empty.className='section-sub'; empty.style.padding='10px'; empty.textContent='No entries match filters.'; root.append(empty); }
+        container.append(root);
+      });
+    }
+
+    function card(s){
+      const c = document.createElement('article'); c.className='card';
+      const head = document.createElement('div'); head.style.display='flex'; head.style.justifyContent='space-between'; head.style.alignItems='center';
+      const ttl=document.createElement('strong'); ttl.textContent=s.title; head.append(ttl);
+      const badge=document.createElement('span'); badge.className='badge ' + (s.verified?'ok':'warn'); badge.textContent = s.verified? 'VERIFIED' : 'NEEDS VERIFICATION'; head.append(badge);
+      c.append(head);
+
+      const meta=document.createElement('div'); meta.className='meta'; meta.innerHTML=`<span>📍 ${s.location||'—'}</span><span>📆 ${s.year||'—'} (${s.era||'—'})</span>`; c.append(meta);
+
+      const tags=document.createElement('div'); tags.className='tags';
+      s.archetypes?.forEach(t=>{
+        const el=document.createElement('span'); el.className='tag'; el.textContent=t; el.title='Filter by archetype'; el.addEventListener('click',()=>{ state.filters.archetype = new Set([t]); renderAll(); }); tags.append(el);
+      });
+      c.append(tags);
+
+      const story=document.createElement('p'); story.className='story'; story.textContent=s.description || ''; c.append(story);
+
+      const myth=document.createElement('small'); myth.className='section-sub'; myth.innerHTML = `Mythic echo: <em>${s.mythicEcho||'—'}</em>`; c.append(myth);
+
+      const actions=document.createElement('div'); actions.className='actions';
+      (s.sources||[]).forEach(u=>{ if(u && typeof u==='string'){ const a=document.createElement('a'); a.href=u; a.target='_blank'; a.rel='noopener'; a.className='link'; a.textContent='Source'; actions.append(a);} });
+      c.append(actions);
+
+      c.title = s.verified? 'Verified record' : 'Research lead — needs citation(s)';
+      return c;
+    }
+
+    function renderTimeline(){
+      const tl = $('#tl'); tl.innerHTML='';
+      const items = state.stories.filter(matchesFilters).slice().sort((a,b)=> (a.year||0)-(b.year||0));
+      if(!items.length){ tl.innerHTML='<div class="t-item"><div></div><div class="t-card">No entries match filters.</div></div>'; return; }
+      items.forEach(s=>{
+        const row=document.createElement('div'); row.className='t-item';
+        const dot=document.createElement('div'); dot.className='t-dot'; row.append(dot);
+        const card=document.createElement('div'); card.className='t-card';
+        card.innerHTML = `<strong>${s.year||'—'} · ${s.title}</strong><div class="meta"><span>📍 ${s.location||'—'}</span><span>🏷️ ${s.category}</span><span>${s.verified?'<span class="badge ok">VERIFIED</span>':'<span class="badge warn">NEEDS VERIFICATION</span>'}</span></div><div class="section-sub">${s.mythicEcho?('Mythic: '+s.mythicEcho):''}</div>`;
+        row.append(card); tl.append(row);
+      });
+    }
+
+    // --- Constellation ---
+    const sky = {
+      cvs: null, ctx: null, nodes: [],
+      init(){ this.cvs = $('#sky'); this.ctx = this.cvs.getContext('2d'); this.resize(); window.addEventListener('resize',()=>this.resize()); this.randomize(); this.draw(); },
+      resize(){ const r = this.cvs.getBoundingClientRect(); this.cvs.width = r.width; this.cvs.height = r.height; },
+      randomize(){
+        const items = state.stories.filter(matchesFilters);
+        const groups = ARCHETYPES; const area = this.cvs.width*this.cvs.height; const density = Math.max(16, Math.min(items.length, 120));
+        const pts = [];
+        items.forEach((s,i)=>{
+          const g = s.archetypes?.[0] || groups[i%groups.length];
+          pts.push({ x: Math.random()*this.cvs.width, y: Math.random()*this.cvs.height, r: 2 + Math.random()*2, g, s });
+        });
+        this.nodes = pts;
+      },
+      draw(highlight){
+        const {ctx,cvs,nodes}=this; ctx.clearRect(0,0,cvs.width,cvs.height);
+        // faint starfield
+        for(let i=0;i<100;i++){ const x=Math.random()*cvs.width, y=Math.random()*cvs.height; ctx.fillStyle='rgba(255,255,255,.06)'; ctx.fillRect(x,y,1,1); }
+        // links
+        ctx.lineWidth=0.6; ctx.strokeStyle='rgba(122,165,255,.18)';
+        for(let i=0;i<nodes.length-1;i++){
+          const a=nodes[i], b=nodes[i+1];
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+        // nodes
+        nodes.forEach(n=>{
+          const focus = highlight && n.g===highlight;
+          ctx.beginPath(); ctx.arc(n.x,n.y, n.r*(focus?2:1), 0, Math.PI*2);
+          ctx.fillStyle = focus? 'rgba(155,255,217,.95)' : 'rgba(122,165,255,.85)';
+          ctx.fill();
+        });
+      }
+    };
+
+    function renderLegend(){
+      const box = $('#legend'); box.innerHTML='';
+      ARCHETYPES.forEach(a=>{
+        const el = chip(a,'archetype'); el.addEventListener('click',()=>{ sky.draw(a); state.filters.archetype = new Set([a]); renderAll(); }); box.append(el);
+      });
+    }
+
+    // --- Add form ---
+    function handleAdd(e){
+      e.preventDefault(); const fd = new FormData(e.target);
+      const st = {
+        title: fd.get('title')?.toString().trim(),
+        year: Number(fd.get('year'))||null,
+        era: fd.get('era')||'',
+        location: fd.get('location')?.toString().trim()||'',
+        category: fd.get('category')||'',
+        archetypes: [fd.get('archetype')||''],
+        mythicEcho: fd.get('mythic')?.toString().trim()||'',
+        sources: (fd.get('sources')?.toString()||'').split(',').map(s=>s.trim()).filter(Boolean),
+        description: fd.get('description')?.toString().trim()||'',
+        verified: !!fd.get('verified')
+      };
+      state.added.push(st); localStorage.setItem('foster.added', JSON.stringify(state.added)); loadStories(); renderAll(); e.target.reset();
+    }
+
+    function exportJSON(){
+      const blob = new Blob([JSON.stringify({stories: state.stories}, null, 2)], {type:'application/json'});
+      const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='foster_heroic_ledger.json'; a.click(); URL.revokeObjectURL(a.href);
+    }
+
+    function importJSON(file){
+      const fr = new FileReader(); fr.onload = ()=>{
+        try{ const data = JSON.parse(fr.result);
+          if(Array.isArray(data.stories)){
+            state.added = data.stories.slice().filter(s=> !s._seed); // treat all as user layer
+            localStorage.setItem('foster.added', JSON.stringify(state.added));
+            loadStories(); renderAll();
+          } else alert('Invalid JSON: missing "stories" array.');
+        } catch(err){ alert('Could not parse JSON.'); }
+      }; fr.readAsText(file);
+    }
+
+    function clearLocal(){ if(confirm('Remove all locally added stories?')){ localStorage.removeItem('foster.added'); state.added=[]; loadStories(); renderAll(); }}
+
+    // --- Render all ---
+    function renderAll(){ renderSections(); renderTimeline(); sky.randomize(); sky.draw(); }
+
+    // --- Init ---
+    window.addEventListener('DOMContentLoaded', ()=>{
+      // Theme and controls
+      applyTheme(); $('#themeBtn').addEventListener('click', ()=>{ state.theme = state.theme==='light'?'dark':'light'; localStorage.setItem('theme', state.theme); applyTheme(); });
+      $('#printBtn').addEventListener('click', ()=> window.print());
+
+      loadStories(); renderFilters(); renderLegend(); renderAll(); sky.init();
+
+      $('#addForm').addEventListener('submit', handleAdd);
+      $('#exportBtn').addEventListener('click', exportJSON);
+      $('#importInput').addEventListener('change', (e)=> e.target.files[0] && importJSON(e.target.files[0]));
+      $('#clearBtn').addEventListener('click', clearLocal);
+    });
+  </script>
+</body>
+</html>
+

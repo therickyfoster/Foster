@@ -1,0 +1,5 @@
+{
+  "note": "Optional uplink. Replace 'source' with a public JSON URL or publish a Google Sheet to the web as CSV and convert to JSON server-side.",
+  "source": "https://your-uplink-endpoint.example/api/events.json",
+  "events": []
+}

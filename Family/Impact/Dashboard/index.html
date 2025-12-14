@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Foster Line · Family Impact Dashboard</title>
+  <meta name="description" content="A quiet ledger of care: where every coin becomes a meal, every meal a memory, and every memory leans away from war." />
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png">
+  <meta name="theme-color" content="#0b1220">
+  <!-- Tailwind CDN (compiled in browser) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom tweaks */
+    html, body { background: radial-gradient(1200px 800px at 50% -10%, #0f172a 0%, #020617 60%); color: #e2e8f0; }
+    .glass { background: rgba(2, 6, 23, 0.55); backdrop-filter: blur(8px); border: 1px solid rgba(30, 41, 59, 0.6); }
+    .chip { border: 1px solid rgba(148, 163, 184, 0.25); }
+    .shadow-soft { box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    @media print {
+      .no-print { display: none !important; }
+      .print-bg { background: white !important; color: black !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <div id="app" class="min-h-screen"></div>
+
+  <!-- React + ReactDOM + Recharts + DayJS (UMD) -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
+  <script src="https://unpkg.com/dayjs/dayjs.min.js"></script>
+
+  <!-- App logic -->
+  <script type="module" src="app.js"></script>
+
+  <!-- PWA service worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js').catch(console.error);
+      });
+    }
+  </script>
+</body>
+</html>

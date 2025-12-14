@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "events": [
+    {
+      "date": "2025-05-01",
+      "who": "Robin",
+      "usd": 120,
+      "kids": 30,
+      "conflicts": 1,
+      "chain": "ETH",
+      "tx": "0xabc...",
+      "ref": "https://example.org/proof/1"
+    },
+    {
+      "date": "2025-05-12",
+      "who": "Ricky",
+      "usd": 60,
+      "kids": 10,
+      "conflicts": 0,
+      "chain": "SOL",
+      "tx": "HfG...PXQx"
+    },
+    {
+      "date": "2025-06-02",
+      "who": "Alyssia",
+      "usd": 88,
+      "kids": 15,
+      "conflicts": 0
+    },
+    {
+      "date": "2025-06-15",
+      "who": "Robin-Ann",
+      "usd": 140,
+      "kids": 40,
+      "conflicts": 1
+    },
+    {
+      "date": "2025-07-01",
+      "who": "Katelynn",
+      "usd": 75,
+      "kids": 20,
+      "conflicts": 0
+    },
+    {
+      "date": "2025-07-04",
+      "who": "Robin",
+      "usd": 250,
+      "kids": 80,
+      "conflicts": 2,
+      "chain": "ETH",
+      "tx": "0xdef..."
+    },
+    {
+      "date": "2025-07-20",
+      "who": "Ricky",
+      "usd": 100,
+      "kids": 25,
+      "conflicts": 1
+    },
+    {
+      "date": "2025-08-03",
+      "who": "Alyssia",
+      "usd": 50,
+      "kids": 12,
+      "conflicts": 0
+    },
+    {
+      "date": "2025-08-10",
+      "who": "Katelynn",
+      "usd": 40,
+      "kids": 9,
+      "conflicts": 0
+    }
+  ]
+}
